@@ -38,6 +38,9 @@ INGREDIENTES = {
     "Suco de laranja": {"laranja"},
 }
 
+vendas = []
+
+
 def preco_de(estoque: dict, produto: str) -> float:
 
     if produto in estoque:
@@ -46,13 +49,24 @@ def preco_de(estoque: dict, produto: str) -> float:
     
 print(preco_de(ESTOQUE, 'X-Burguer'))
 
-def vender(estoque: dict, vendas, produto, qtd) -> float:
-
-    # simular venda
-    # baixa automatica estoque
-
+def tem_estoque(estoque:dict, produto:str, qtd:int) -> bool:
     if produto in estoque:
-        return estoque
-    return 0.0
+        return estoque[produto]['qtd'] >= qtd # [chave]['valor']
+    return False
 
-print(vender('X-Burguer'))
+print(tem_estoque(ESTOQUE, "X-Burguer", 20)) # 3 parametro é a qtd pedida
+print(tem_estoque(ESTOQUE, 'Água mineral', 1))
+
+def vender(estoque: dict, vendas:list, produto:str, qtd:int) -> float:
+    if not tem_estoque(estoque, produto, qtd): # se nao tem
+        return 0.0
+
+    else: # SE TEM
+        valor = qtd * preco_de(estoque, produto)
+        # como descontar qtd do estoque
+        estoque[produto]['qtd'] -= qtd
+        vendas.append([produto, qtd, valor])
+
+        return valor
+vendas = []
+print(vender(ESTOQUE, vendas, "X-Burguer", 2))
