@@ -7,7 +7,7 @@
 # exemplo:
 # metodo .add adicixona individualmente
 # metodo update adixciona mais de um metodo
-# metodo discard rexmove 
+# metodo discard rexmove
 # remove remove masx nao permite itens inexistentes
 
 '''def conjuntos():
@@ -39,14 +39,14 @@ INGREDIENTES = {
 }
 
 vendas = []
-
+lista = []
 
 def preco_de(estoque: dict, produto: str) -> float:
 
     if produto in estoque:
-        return estoque[produto]['preco'] # 
+        return estoque[produto]['preco'] #
     return 0.0
-    
+
 print(preco_de(ESTOQUE, 'X-Burguer'))
 
 def tem_estoque(estoque:dict, produto:str, qtd:int) -> bool:
@@ -69,4 +69,50 @@ def vender(estoque: dict, vendas:list, produto:str, qtd:int) -> float:
 
         return valor
 vendas = []
-print(vender(ESTOQUE, vendas, "X-Burguer", 2))
+print(vender(ESTOQUE, vendas, "X-Burguer", 10))
+
+# devolver um conjunto com os nomes dos produtos em que qtd > 0
+def disponiveis(estoque: dict) -> set:
+
+    conjunto = set()
+    for produto, dados in estoque.items():
+        # verificar se qtd > 0
+        if dados['qtd'] > 0:
+            conjunto.add(produto)
+
+    return conjunto
+
+def sugestao_segura(ingredientes: dict, estoque: dict, alergias: set) -> list[str]:
+
+    disp = disponiveis(estoque)          # calcula o set de disponiveis uma unica vez
+    segura = []                          # lista onde vou acumulando os aprovados
+
+    for produto, ingr_do_produto in ingredientes.items():
+        esta_disponivel = produto in disp
+        e_seguro = not (ingr_do_produto & alergias)  
+        if esta_disponivel and e_seguro:
+            segura.append(produto)
+
+    return sorted(segura)
+
+def fechar_caixa(vendas: list) -> float:
+    # somar o faturamento de vendas (float)
+    # percorrer vendas (coluna 3 de vendas e somar o valor total)
+    total = 0
+    for coluna in vendas:
+        total += coluna[2]
+
+    return total
+fechar_caixa(vendas)
+
+def contagem_por_produto(vendas: list) -> dict[str, int]:
+    """Conta as unidades vendidas por produto.
+
+    Percorre a lista de vendas (cada item [produto, qtd, valor]) e acumula
+    a quantidade por produto. Devolve {produto: total_de_unidades}.
+    Usa get com padrão 0 para não levantar KeyError no primeiro registro.
+    """
+    contagem = {}
+    for produto, qtd, valor in vendas:
+        contagem[produto] = contagem.get(produto, 0) + qtd
+    return contagem
