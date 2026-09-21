@@ -59,6 +59,7 @@ print(tem_estoque(ESTOQUE, 'Água mineral', 1))
 
 def vender(estoque: dict, vendas:list, produto:str, qtd:int) -> float:
     if not tem_estoque(estoque, produto, qtd): # se nao tem
+        
         return 0.0
 
     else: # SE TEM
