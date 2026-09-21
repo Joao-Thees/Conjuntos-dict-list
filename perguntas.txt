@@ -1,0 +1,38 @@
+Pergunta 1 — Baixa de estoque ✅ Correta
+
+Linha 68, dentro de vender:
+
+estoque[produto]['qtd'] -= qtd
+
+Perfeito. Só uma dica pra brilhar na oral: explique por que está ali e não antes — a baixa só acontece depois de passar pela guarda if not tem_estoque(...) (linha 61). Ou seja, você só desconta se realmente tem estoque. Isso mostra que você entende o fluxo, não decorou a linha.
+
+Pergunta 2 — Recusar qtd zero/negativa ⚠️ Resposta imprecisa
+
+Aqui atenção. A pergunta pede pra vender recusar qtd ≤ 0. O teu while True não serve aqui, e o motivo é importante:
+
+vender não pede input — ela recebe qtd como parâmetro. Um while True com "tentar de novo" seria útil num menu/interface que lê do usuário, mas dentro da função a modificação correta é uma guarda de validação logo no início:
+
+def vender(estoque: dict, vendas: list, produto: str, qtd: int) -> float:
+    if qtd <= 0:          # recusa zero ou negativo
+        return 0.0
+    if not tem_estoque(estoque, produto, qtd):
+        return 0.0
+    ...
+
+Isso é o que chamam de early return / cláusula de guarda: valida antes de fazer o trabalho. Se cair a pergunta ao vivo, é exatamente essa linha que o professor quer ver você digitar. Guarde a diferença: validar parâmetro (dentro da função) ≠ repetir input (loop de menu, fora).
+
+Pergunta 4 — preco_de devolve 0.0 ⚠️ Ideia certa, explicação incompleta
+
+Você disse "pra não dar None". A intenção está no caminho, mas o ponto real é mais forte: retorna 0.0 para não quebrar (não lançar exceção).
+
+Se você fizesse return estoque[produto]['preco'] sem o if, e o produto não existisse, o Python lançaria um KeyError e o programa pararia. O 0.0 é um valor "neutro" que deixa o código continuar rodando.
+
+O que "muda na Aula 11" (quase certo pelo contexto do curso): você aprende tratamento de exceções (try/except e/ou raise). Aí a decisão vira: em vez de mascarar o erro com 0.0 (que esconde o problema — o preço de um produto inexistente "parecer" grátis), você passa a sinalizar o erro explicitamente, ex:
+
+raise KeyError(f"Produto '{produto}' não existe no estoque")
+
+O argumento de defesa: retornar 0.0 é conveniente agora, mas é perigoso — esconde bug. Depois da Aula 11 você trata o erro de forma honesta.
+
+---
+
+Resumo: a 1 está redonda. A 2 e a 4 você tinha a intuição, mas na oral precisam da precisão acima. Quer que eu monte a resposta da pergunta 3 (adicionar "Combo da casa" 29.90/5 un. ao estoque e vender 2)? É só código curto e cai bem treinar.
